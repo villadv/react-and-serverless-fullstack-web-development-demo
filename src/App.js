@@ -1,25 +1,30 @@
 import React from 'react';
-import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Game from "./pages/Game";
 import GameOver from "./pages/GameOver";
 import HighScores from "./pages/HighScores";
 import Home from "./pages/Home";
 import Navbar from './components/Navbar';
+import { Container } from './styled/Container';
+import { Main } from './styled/Main';
+import { Global } from './styled/Global';
 
 
 function App() {
   return (
     <Router>
+      <Global />
+      <Main>   
+      <Container>
       <Navbar />
-      <div className="container">
       <Routes>
-        <Route path="/Game" component={Game} />
-        <Route path="/HighScores" component={HighScores} />
-        <Route path="/GameOver" component={GameOver} />
-        <Route path="/" component={Home} />
+        <Route path="/Game" element={<Game />} />
+        <Route path="/HighScores" element={<HighScores />} />
+        <Route path="/GameOver" element={<GameOver />} />
+        <Route path="/" element={<Home />} />
       </Routes>
-      </div>
+      </Container>
+      </Main>
     </Router>
   );
 }
