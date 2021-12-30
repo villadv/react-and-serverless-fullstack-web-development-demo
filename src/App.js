@@ -12,12 +12,14 @@ function App() {
   return (
     <Router>
       <Navbar />
+      <div className="container">
       <Routes>
-        <Route path="/game" component={Game} />
-        <Route path="/highScores" component={HighScores} />
-        <Route path="/gameOver" component={GameOver} />
+        <Route path="/Game" component={Game} />
+        <Route path="/HighScores" component={HighScores} />
+        <Route path="/GameOver" component={GameOver} />
         <Route path="/" component={Home} />
       </Routes>
+      </div>
     </Router>
   );
 }
