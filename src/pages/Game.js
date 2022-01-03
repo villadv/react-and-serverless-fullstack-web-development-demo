@@ -1,21 +1,29 @@
-import React, {useState, useEffect,} from "react";
+import React, {useState, useEffect, useCallback} from "react";
 import { StyledGame, StyledScore, StyleTimer, StyledCharacter } from '../styled/Game';
 import { Strong } from '../styled/Random';
 import { useNavigate } from "react-router-dom";
 
 
 export default function Game({history}){
+    const MAX_SECONDS = 50;
+    const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    const [currentCharacter, setCurrentCharacter] = useState('');
     const [score, setScore] = useState(0);
-    const MAX_SECONDS = 90;
     const [ms, setMs] = useState(0);
     const [seconds, setSeconds] = useState(MAX_SECONDS);
 
     useEffect(() => {
-            const currentTime = new Date();
-            const interval = setInterval(() => updateTime(currentTime), 1);
+        setRandomCharacter();
+        const currentTime = new Date();
+        const interval = setInterval(() => updateTime(currentTime), 1);
             return () => clearInterval(interval);
-            }, []);
+        }, []);
     
+    const setRandomCharacter = () => {
+        const randomInt = Math.floor(Math.random() * 36);
+        setCurrentCharacter(characters[randomInt]);
+    }
+
     const updateTime = (startTime) => {
         const endTime = new Date();
         const msPassedStr = (endTime.getTime() - startTime.getTime()).toString();
@@ -42,16 +50,25 @@ export default function Game({history}){
             navigate('/GameOver');
         };
 
-    const keyUpHandler = (e) => {
+    const keyUpHandler = useCallback((e) => {
         console.log(e.key);
-    };
+        if(e.key === currentCharacter){
+            setScore((prevScore) => prevScore + 1);
+        } else {
+            if(score > 0 ){
+                setScore((prevScore) => prevScore -1);
+            }
+        }
+        setRandomCharacter();
+        }, [currentCharacter]);    
+    
 
     useEffect(() => {
         document.addEventListener('keyup', keyUpHandler);
         return () => {
             document.removeEventListener('keyup', keyUpHandler);
         }
-    }, []);
+    }, [keyUpHandler]);
 
 
     return (
@@ -59,7 +76,7 @@ export default function Game({history}){
             <StyledScore>
                 Score:<Strong>{score}</Strong>
             </StyledScore>
-            <StyledCharacter>A</StyledCharacter>
+            <StyledCharacter>{currentCharacter}</StyledCharacter>
             <StyleTimer>Time: <Strong>{seconds}: {ms}</Strong></StyleTimer>
         </StyledGame>
     );
